@@ -1,19 +1,20 @@
-#include <memory>
 #if defined(__INTELLISENSE__) || !defined(USE_CPP20_MODULES)
-#	include <vulkan/vulkan_raii.hpp>
+#include <vulkan/vulkan_raii.hpp>
 #else
 import vulkan_hpp;
 #endif
+
+#define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
-#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
+#include <cstdlib>
 
-const uint32_t WIDTH  = 800;
-const uint32_t HEIGHT = 600;
+constexpr uint32_t kWidth = 800;
+constexpr uint32_t kHeight = 600;
 
-class HelloTriangleApplication
+class VulkanTestApplication
 {
 public:
     void run()
@@ -25,25 +26,27 @@ public:
     }
 
 private:
-    GLFWwindow *window = nullptr;
+    GLFWwindow* m_window {};
 
     void initWindow()
     {
         glfwInit();
 
-        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);  // Prevent from creating an OpenGL context
         glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
-        window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
+        m_window = glfwCreateWindow(kWidth, kHeight, "Vulkan", nullptr, nullptr);
+
     }
 
     void initVulkan()
     {
+
     }
 
     void mainLoop()
     {
-        while (!glfwWindowShouldClose(window))
+        while (!glfwWindowShouldClose(m_window))
         {
             glfwPollEvents();
         }
@@ -51,7 +54,7 @@ private:
 
     void cleanup()
     {
-        glfwDestroyWindow(window);
+        glfwDestroyWindow(m_window);
 
         glfwTerminate();
     }
@@ -59,12 +62,13 @@ private:
 
 int main()
 {
+    VulkanTestApplication app;
+
     try
     {
-        HelloTriangleApplication app;
         app.run();
     }
-    catch (const std::exception &e)
+    catch (const std::exception& e)
     {
         std::cerr << e.what() << std::endl;
         return EXIT_FAILURE;
